@@ -2,9 +2,14 @@
 @section('title', 'Detail Buku')
 @section('content')
     <h2>Detail Buku</h2>
-    <p><strong>Judul:</strong> {{ $book['title'] }}</p>
-    <p><strong>Penulis:</strong> {{ $book['author'] }}</p>
-    <p><strong>Tahun:</strong> {{ $book['year'] }}</p>
-    <p><strong>Deskripsi:</strong> {{ $book['description'] }}</p>
-    <a href="/books">Kembali ke Daftar Buku</a>
+    
+    <ul>
+        <li><strong>Judul:</strong> {{ $book->title }}</li>
+        <li><strong>Penulis:</strong> {{ $book->author }}</li>
+        <li><strong>Tahun Terbit:</strong> {{ $book->year }}</li>
+        <li><strong>Stok Tersedia:</strong> {{ $book->stock }}</li>
+    </ul>
+
+    <br>
+    <a href="{{ route('books.index') }}">[Kembali ke Daftar Buku]</a>
 @endsection

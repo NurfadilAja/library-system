@@ -1,14 +1,45 @@
 @extends('layouts.app')
 @section('title', 'Edit Buku')
+
 @section('content')
     <h2>Edit Buku</h2>
     <form action="{{ route('books.update', $book->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <label>Judul:</label> <input type="text" name="title" value="{{ $book->title }}"><br><br>
-        <label>Penulis:</label> <input type="text" name="author" value="{{ $book->author }}"><br><br>
-        <label>Tahun:</label> <input type="number" name="year" value="{{ $book->year }}"><br><br>
-        <label>Stok:</label> <input type="number" name="stock" value="{{ $book->stock }}"><br><br>
+        
+        {{-- Input Judul --}}
+        <label>Judul:</label><br>
+        <input type="text" name="title" value="{{ old('title', $book->title) }}">
+        @error('title')
+            <p style="color: red; font-size: 14px; margin-top: 2px;">{{ $message }}</p>
+        @enderror
+        <br><br>
+
+        {{-- Input Penulis --}}
+        <label>Penulis:</label><br>
+        <input type="text" name="author" value="{{ old('author', $book->author) }}">
+        @error('author')
+            <p style="color: red; font-size: 14px; margin-top: 2px;">{{ $message }}</p>
+        @enderror
+        <br><br>
+
+        {{-- Input Tahun --}}
+        <label>Tahun:</label><br>
+        <input type="number" name="year" value="{{ old('year', $book->year) }}">
+        @error('year')
+            <p style="color: red; font-size: 14px; margin-top: 2px;">{{ $message }}</p>
+        @enderror
+        <br><br>
+
+        {{-- Input Stok --}}
+        <label>Stok:</label><br>
+        <input type="number" name="stock" value="{{ old('stock', $book->stock) }}">
+        @error('stock')
+            <p style="color: red; font-size: 14px; margin-top: 2px;">{{ $message }}</p>
+        @enderror
+        <br><br>
+
         <button type="submit">Update</button>
+        <a href="{{ route('books.index') }}" style="margin-left: 10px;">Kembali</a>
     </form>
 @endsection

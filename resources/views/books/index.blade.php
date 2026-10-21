@@ -9,7 +9,12 @@
     <ul>
         @foreach($books as $book)
             <li>
-                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a> - {{ $book->author }}
+                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a> oleh {{ $book->author }}
+                
+                <!-- Menampilkan Nama Kategori -->
+                <br>
+                <small style="color: #666;">Kategori: <strong>{{ $book->category?->name ?? 'Belum ada kategori' }}</strong></small>
+                
                 @if($book->stock > 0)
                     (Stok tersedia: {{ $book->stock }})
                 @else

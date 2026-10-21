@@ -4,34 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\Category; // 1. Import model Category
 
 class BookController extends Controller
 {
     // READ - Menampilkan Daftar Buku
     public function index()
     {
-        $books = Book::all();
+        // 2. Gunakan eager loading with('category')
+        $books = Book::with('category')->get(); 
         return view('books.index', compact('books'));
     }
 
     // CREATE - Menampilkan form tambah buku
     public function create()
     {
-        return view('books.create');
+        // 3. Kirim data kategori yang diurutkan ke view create
+        $categories = Category::orderBy('name')->get();
+        return view('books.create', compact('categories'));
     }
 
     // STORE - Menyimpan data ke database dengan Validasi
     public function store(Request $request)
     {
-        // Validasi Request (menggabungkan rule standar dan rule tambahan)
+        // 4. Tambahkan validasi category_id dengan aturan exists
         $validated = $request->validate([
-            'title'  => 'required|string|min:3|max:255',
-            'author' => 'required|string|min:3|max:255',
-            'year'   => 'required|integer|min:1900|max:' . date('Y'),
-            'stock'  => 'required|integer|min:0|max:1000',
+            'title'       => 'required|string|min:3|max:255',
+            'author'      => 'required|string|min:3|max:255',
+            'year'        => 'required|integer|min:1900|max:' . date('Y'),
+            'stock'       => 'required|integer|min:0|max:1000',
+            'category_id' => 'required|exists:categories,id', 
         ]);
 
-        Book::create($validated); // Menyimpan data tervalidasi
+        Book::create($validated);
 
         return redirect()->route('books.index')
             ->with('success', 'Data buku berhasil ditambahkan.');
@@ -46,21 +51,24 @@ class BookController extends Controller
     // EDIT - Menampilkan form edit buku (Route Model Binding)
     public function edit(Book $book)
     {
-        return view('books.edit', compact('book'));
+        // 5. Kirim data kategori dan data buku ke view edit
+        $categories = Category::orderBy('name')->get();
+        return view('books.edit', compact('book', 'categories'));
     }
 
     // UPDATE - Menyimpan perubahan data ke database dengan Validasi
     public function update(Request $request, Book $book)
     {
-        // Validasi Request saat Update
+        // 6. Tambahkan validasi category_id saat update
         $validated = $request->validate([
-            'title'  => 'required|string|min:3|max:255',
-            'author' => 'required|string|min:3|max:255',
-            'year'   => 'required|integer|min:1900|max:' . date('Y'),
-            'stock'  => 'required|integer|min:0|max:1000',
+            'title'       => 'required|string|min:3|max:255',
+            'author'      => 'required|string|min:3|max:255',
+            'year'        => 'required|integer|min:1900|max:' . date('Y'),
+            'stock'       => 'required|integer|min:0|max:1000',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        $book->update($validated); // Memperbarui data tervalidasi
+        $book->update($validated);
 
         return redirect()->route('books.index')
             ->with('success', 'Data buku berhasil diperbarui.');

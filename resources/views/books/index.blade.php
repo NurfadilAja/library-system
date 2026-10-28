@@ -1,20 +1,11 @@
-
 @extends('layouts.app')
 @section('title', 'Daftar Buku')
 
 @section('content')
     <h2>Daftar Buku</h2>
 
-    <!-- Tombol Logout -->
-    <form action="{{ route('logout') }}" method="POST"
-          style="margin-bottom: 15px;">
-        @csrf
-        <button type="submit">Logout</button>
-    </form>
-
     <!-- Tombol Tambah Buku -->
-    <a href="{{ route('books.create') }}"
-       style="margin-bottom: 10px; display: inline-block;">
+    <a href="{{ route('books.create') }}" style="margin-bottom: 10px; display: inline-block;">
         [+ Tambah Buku Baru]
     </a>
 

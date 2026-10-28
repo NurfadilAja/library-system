@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -8,11 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AuthController;
 
-// Halaman dashboard
-Route::get('/', [DashboardController::class, 'index']);
-Route::get('/dashboard', [DashboardController::class, 'index']);
-
-// Route login hanya untuk pengguna yang belum login
+// Route login hanya untuk tamu (belum login)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
@@ -26,17 +21,19 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-// Route buku hanya dapat diakses setelah login
+// Semua route di bawah ini hanya dapat diakses setelah login
 Route::middleware('auth')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('books', BookController::class);
+
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->name('categories.index');
+
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->name('categories.store');
+
+    Route::get('/members', [MemberController::class, 'index'])
+        ->name('members.index');
 });
-
-// Route kategori
-Route::get('/categories', [CategoryController::class, 'index'])
-    ->name('categories.index');
-
-Route::post('/categories', [CategoryController::class, 'store'])
-    ->name('categories.store');
-
-// Route anggota
-Route::get('/members', [MemberController::class, 'index']);

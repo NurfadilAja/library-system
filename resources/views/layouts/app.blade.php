@@ -8,23 +8,24 @@
     <header>
         <h1>Library System</h1>
         <nav>
-            <a href="/dashboard">Dashboard</a> |
-            <a href="/books">Books</a> |
-            <a href="/categories">Categories</a> |
-            <a href="/members">Members</a>
+            <a href="{{ route('dashboard') }}">Dashboard</a> |
+            <a href="{{ route('books.index') }}">Books</a> |
+            <a href="{{ route('categories.index') }}">Categories</a> |
+            <a href="{{ route('members.index') }}">Members</a>
 
             @auth
                 |
-                <form action="{{ route('logout') }}" method="POST"
-                      style="display: inline;">
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" style="
-                        background-color: #dc3545;
-                        color: white;
+                        background: none;
                         border: none;
-                        padding: 6px 12px;
-                        border-radius: 5px;
+                        color: red;
                         cursor: pointer;
+                        text-decoration: underline;
+                        font-size: inherit;
+                        font-family: inherit;
+                        padding: 0;
                     ">
                         Logout
                     </button>

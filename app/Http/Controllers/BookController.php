@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Book;
 use App\Models\Category; // 1. Import model Category
 
@@ -77,6 +78,8 @@ class BookController extends Controller
     // DELETE - Menghapus data buku
     public function destroy(Book $book)
     {
+        Gate::authorize('delete', $book);
+
         $book->delete();
 
         return redirect()->route('books.index')

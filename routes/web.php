@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 // Route login hanya untuk tamu (belum login)
 Route::middleware('guest')->group(function () {
@@ -21,7 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-// Semua route di bawah ini hanya dapat diakses setelah login
+// Route yang dapat diakses oleh admin dan petugas (pengguna yang sudah login)
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -36,4 +37,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/members', [MemberController::class, 'index'])
         ->name('members.index');
+});
+
+// Route pengelolaan pengguna hanya untuk admin (menggunakan Gate can:manage-users)
+Route::middleware(['auth', 'can:manage-users'])->group(function () {
+    Route::resource('users', UserController::class);
 });

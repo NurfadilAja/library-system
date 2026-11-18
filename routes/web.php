@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BorrowingController;
 
 // Route login hanya untuk tamu (belum login)
 Route::middleware('guest')->group(function () {
@@ -22,21 +23,36 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-// Route yang dapat diakses oleh admin dan petugas (pengguna yang sudah login)
+// Route yang dapat diakses oleh pengguna yang sudah login (admin dan petugas)
 Route::middleware('auth')->group(function () {
+    // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Buku (CRUD)
     Route::resource('books', BookController::class);
 
+    // Kategori
     Route::get('/categories', [CategoryController::class, 'index'])
         ->name('categories.index');
-
     Route::post('/categories', [CategoryController::class, 'store'])
         ->name('categories.store');
 
+    // Anggota
     Route::get('/members', [MemberController::class, 'index'])
         ->name('members.index');
+    Route::post('/members', [MemberController::class, 'store'])
+        ->name('members.store');
+
+    // Transaksi Peminjaman & Pengembalian
+    Route::get('/borrowings', [BorrowingController::class, 'index'])
+        ->name('borrowings.index');
+    Route::get('/borrowings/create', [BorrowingController::class, 'create'])
+        ->name('borrowings.create');
+    Route::post('/borrowings', [BorrowingController::class, 'store'])
+        ->name('borrowings.store');
+    Route::patch('/borrowings/{borrowing}/return', [BorrowingController::class, 'returnBook'])
+        ->name('borrowings.return');
 });
 
 // Route pengelolaan pengguna hanya untuk admin (menggunakan Gate can:manage-users)

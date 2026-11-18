@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Pertemuan 14 - Integrasi Sistem Informasi Perpustakaan</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #1a365d;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #1a365d;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 22px;
+        }
+        .header p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        th {
+            background-color: #f7fafc;
+            color: #2d3748;
+            text-align: left;
+        }
+        .screenshot-box {
+            border: 2px dashed #a0aec0;
+            background-color: #f8fafc;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot-box img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .screenshot-box .placeholder {
+            color: #718096;
+            font-style: italic;
+            padding: 30px 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-success { background-color: #c6f6d5; color: #22543d; }
+        .badge-info { background-color: #bee3f8; color: #2a4365; }
+        .page-break {
+            page-break-before: always;
+        }
+        .no-print-bar {
+            background: #2b6cb0;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .no-print-bar button {
+            background: white;
+            color: #2b6cb0;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        @media print {
+            .no-print-bar {
+                display: none;
+            }
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print-bar">
+        <strong>Dokumen Laporan Praktikum Pertemuan 14</strong> - Siap Cetak ke PDF
+        <button onclick="window.print()">Cetak / Simpan ke PDF (Ctrl + P)</button>
+    </div>
+
+    <div class="header">
+        <h1>LAPORAN PRAKTIKUM PEMROGRAMAN WEB FRAMEWORK (SYS61645)</h1>
+        <p><strong>Pertemuan 14: Integrasi dan Penyempurnaan Sistem Informasi Perpustakaan</strong></p>
+        <p>Program Studi S1 Sistem Informasi - Universitas Singaperbangsa Karawang</p>
+        <p><strong>Repositori GitHub:</strong> <a href="https://github.com/NurfadilAja/library-system" target="_blank">https://github.com/NurfadilAja/library-system</a></p>
+    </div>
+
+    <h2>1. Penjelasan Singkat Mengenai Alur Integrasi Aplikasi</h2>
+    <p>
+        Pada Pertemuan 14, dilakukan integrasi menyeluruh terhadap seluruh modul aplikasi (Kategori, Buku, Anggota, Transaksi Peminjaman, Pengembalian, dan Autentikasi/Otorisasi Pengguna) sehingga bekerja secara berkesinambungan sebagai satu sistem informasi perpustakaan yang utuh:
+    </p>
+    <ol>
+        <li>
+            <strong>Alur Autentikasi & Navigasi:</strong>
+            Pengguna membuka sistem dan wajib login terlebih dahulu. Setelah login, sistem memeriksa identitas dan perannya (Admin atau Petugas). Seluruh modul dapat diakses langsung melalui menu navigasi utama (<em>Dashboard, Books, Categories, Members, Peminjaman</em>, dan <em>Kelola Pengguna</em> khusus Admin).
+        </li>
+        <li>
+            <strong>Alur Master Data (Kategori, Buku, dan Anggota):</strong>
+            Setiap buku terhubung dengan kategori melalui relasi <em>One-to-Many</em> (Kategori memiliki banyak buku). Data anggota disimpan dengan kode unik untuk mempermudah identifikasi saat transaksi.
+        </li>
+        <li>
+            <strong>Alur Transaksi Peminjaman:</strong>
+            Petugas/Admin mencatat peminjaman dengan memilih anggota, buku, dan jumlah pinjaman. Sistem melakukan validasi:
+            <ul>
+                <li>Memeriksa keberadaan data anggota dan buku.</li>
+                <li>Memeriksa stok buku (jika stok kurang dari jumlah yang diminta, transaksi ditolak).</li>
+                <li>Menyimpan transaksi ke tabel <code>borrowings</code> dan detailnya ke <code>borrowing_details</code> dengan status <code>borrowed</code>.</li>
+                <li>Secara otomatis <strong>mengurangi (decrement) stok buku</strong> sesuai jumlah yang dipinjam.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Alur Pengembalian Buku:</strong>
+            Saat buku dikembalikan oleh anggota, petugas menekan tombol "Kembalikan". Sistem memperbarui tanggal kembali (<code>return_date</code>), mengubah status transaksi menjadi <code>returned</code>, dan secara otomatis <strong>menambah kembali (increment) stok buku</strong>.
+        </li>
+        <li>
+            <strong>Alur Dashboard Ringkasan:</strong>
+            Dashboard secara dinamis menghitung dan menampilkan ringkasan data dari database menggunakan Eloquent (Total Buku, Total Kategori, Total Anggota, Total Transaksi, Transaksi Aktif, dan Riwayat Peminjaman Terbaru).
+        </li>
+    </ol>
+
+    <h2>2. Struktur Relasi Antarmodel (Eloquent Relationships)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Relasi</th>
+                <th>Jenis Relasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Category &rarr; Book</td>
+                <td>One-to-Many (<code>hasMany</code> / <code>belongsTo</code>)</td>
+                <td>Satu kategori dapat memiliki banyak buku.</td>
+            </tr>
+            <tr>
+                <td>User &rarr; Borrowing</td>
+                <td>One-to-Many (<code>hasMany</code> / <code>belongsTo</code>)</td>
+                <td>Satu user (petugas/admin) dapat mencatat banyak transaksi peminjaman.</td>
+            </tr>
+            <tr>
+                <td>Member &rarr; Borrowing</td>
+                <td>One-to-Many (<code>hasMany</code> / <code>belongsTo</code>)</td>
+                <td>Satu anggota dapat memiliki banyak riwayat transaksi peminjaman.</td>
+            </tr>
+            <tr>
+                <td>Borrowing &rarr; BorrowingDetail</td>
+                <td>One-to-Many (<code>hasMany</code> / <code>belongsTo</code>)</td>
+                <td>Satu transaksi peminjaman dapat memuat beberapa detail buku.</td>
+            </tr>
+            <tr>
+                <td>Book &rarr; BorrowingDetail</td>
+                <td>One-to-Many (<code>hasMany</code> / <code>belongsTo</code>)</td>
+                <td>Satu buku dapat tercatat di banyak detail transaksi peminjaman.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>3. Bukti Pengujian dan Tangkapan Layar (Screenshots)</h2>
+
+    <h3>A. Screenshot Dashboard Sistem Informasi Perpustakaan</h3>
+    <p>Menampilkan ringkasan statistik (Total Buku, Kategori, Anggota, Peminjaman, dan Riwayat Terbaru) yang diambil langsung dari database.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Dashboard di sini (URL: http://127.0.0.1:8000/dashboard)]</div>
+    </div>
+
+    <h3>B. Screenshot Halaman Kategori, Buku, dan Anggota</h3>
+    <p><strong>1. Halaman Kategori:</strong> Menampilkan daftar kategori dari database serta form tambah kategori.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Halaman Kategori di sini (URL: http://127.0.0.1:8000/categories)]</div>
+    </div>
+
+    <p><strong>2. Halaman Daftar Buku:</strong> Menampilkan relasi buku dengan kategori serta stok buku.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Halaman Daftar Buku di sini (URL: http://127.0.0.1:8000/books)]</div>
+    </div>
+
+    <p><strong>3. Halaman Daftar Anggota:</strong> Menampilkan data anggota perpustakaan yang tersimpan di database.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Halaman Anggota di sini (URL: http://127.0.0.1:8000/members)]</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h3>C. Screenshot Transaksi Peminjaman dan Pengembalian</h3>
+    <p><strong>1. Form dan Bukti Transaksi Peminjaman:</strong> Mencatat peminjaman buku oleh anggota.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Form Tambah Peminjaman & Daftar Peminjaman Berstatus "Dipinjam"]</div>
+    </div>
+
+    <p><strong>2. Bukti Transaksi Pengembalian:</strong> Menampilkan transaksi yang telah selesai berstatus "Dikembalikan" beserta tanggal kembalinya.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Daftar Peminjaman Berstatus "Dikembalikan"]</div>
+    </div>
+
+    <h3>D. Screenshot Perubahan Stok Sebelum dan Sesudah Transaksi</h3>
+    <p><strong>1. Stok Sebelum Peminjaman:</strong></p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Stok Buku Sebelum Dipinjam (misal: Stok: 5)]</div>
+    </div>
+
+    <p><strong>2. Stok Berkurang Setelah Peminjaman:</strong></p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Stok Buku Berkurang Setelah Transaksi (misal: Stok: 4)]</div>
+    </div>
+
+    <p><strong>3. Stok Bertambah Kembali Setelah Buku Dikembalikan:</strong></p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Stok Buku Kembali Bertambah (misal: Stok kembali jadi 5)]</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h3>E. Screenshot Pengujian Hak Akses Admin dan Petugas</h3>
+    <p><strong>1. Login Sebagai Admin:</strong> Menu "Kelola Pengguna" muncul di navbar dan halaman <code>/users</code> dapat diakses.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Login Admin & Halaman Kelola Pengguna (URL: http://127.0.0.1:8000/users)]</div>
+    </div>
+
+    <p><strong>2. Login Sebagai Petugas:</strong> Menu "Kelola Pengguna" tidak muncul, dan saat mengakses <code>/users</code> langsung ditolak dengan pesan error 403 Forbidden.</p>
+    <div class="screenshot-box">
+        <div class="placeholder">[Letakkan Screenshot Penolakan Akses Petugas ke /users (HTTP 403 Forbidden)]</div>
+    </div>
+
+    <hr style="margin-top: 30px;">
+    <p style="text-align: center; font-size: 13px; color: #718096;">
+        Sistem Informasi Perpustakaan &copy; 2026 - Universitas Singaperbangsa Karawang
+    </p>
+
+</body>
+</html>

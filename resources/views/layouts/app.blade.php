@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title')</title>
+    <title>@yield('title') - Library System</title>
 </head>
 <body>
     <header>
@@ -11,7 +11,8 @@
             <a href="{{ route('dashboard') }}">Dashboard</a> |
             <a href="{{ route('books.index') }}">Books</a> |
             <a href="{{ route('categories.index') }}">Categories</a> |
-            <a href="{{ route('members.index') }}">Members</a>
+            <a href="{{ route('members.index') }}">Members</a> |
+            <a href="{{ route('borrowings.index') }}">Peminjaman</a>
 
             @can('manage-users')
                 | <a href="{{ route('users.index') }}">Kelola Pengguna</a>
@@ -47,7 +48,7 @@
 
     <footer>
         <hr>
-        <p>Library System</p>
+        <p>Library System &copy; {{ date('Y') }}</p>
     </footer>
 </body>
 </html>

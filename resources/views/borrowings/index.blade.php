@@ -4,6 +4,14 @@
 @section('content')
     <h2>Transaksi Peminjaman & Pengembalian Buku</h2>
 
+    @if (!empty($needsMigration))
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+            <strong>⚠️ Perhatian:</strong> Tabel <code>borrowings</code> belum dibuat di MySQL Anda.
+            <br>
+            Silakan buka terminal dan jalankan perintah: <code>php artisan migrate</code>
+        </div>
+    @endif
+
     @if (session('success'))
         <p style="color: green; font-weight: bold; background-color: #e8f5e9; padding: 10px; border-radius: 4px; border: 1px solid #c8e6c9;">
             {{ session('success') }}

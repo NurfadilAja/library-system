@@ -6,6 +6,7 @@ use App\Models\Borrowing;
 use App\Models\Book;
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class BorrowingController extends Controller
 {
@@ -14,6 +15,12 @@ class BorrowingController extends Controller
      */
     public function index()
     {
+        if (!Schema::hasTable('borrowings')) {
+            $borrowings = collect();
+            $needsMigration = true;
+            return view('borrowings.index', compact('borrowings', 'needsMigration'));
+        }
+
         $borrowings = Borrowing::with(['member', 'user', 'details.book'])
             ->latest()
             ->get();
@@ -26,8 +33,8 @@ class BorrowingController extends Controller
      */
     public function create()
     {
-        $members = Member::orderBy('name')->get();
-        $books   = Book::orderBy('title')->get();
+        $members = Schema::hasTable('members') ? Member::orderBy('name')->get() : collect();
+        $books   = Schema::hasTable('books') ? Book::orderBy('title')->get() : collect();
 
         return view('borrowings.create', compact('members', 'books'));
     }

@@ -32,17 +32,11 @@ Route::middleware('auth')->group(function () {
     // Buku (CRUD)
     Route::resource('books', BookController::class);
 
-    // Kategori
-    Route::get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
-    Route::post('/categories', [CategoryController::class, 'store'])
-        ->name('categories.store');
+    // Kategori (CRUD)
+    Route::resource('categories', CategoryController::class);
 
-    // Anggota
-    Route::get('/members', [MemberController::class, 'index'])
-        ->name('members.index');
-    Route::post('/members', [MemberController::class, 'store'])
-        ->name('members.store');
+    // Anggota (CRUD)
+    Route::resource('members', MemberController::class);
 
     // Transaksi Peminjaman & Pengembalian
     Route::get('/borrowings', [BorrowingController::class, 'index'])

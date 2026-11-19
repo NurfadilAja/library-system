@@ -5,6 +5,14 @@
     <h2>Dashboard Perpustakaan</h2>
     <p>Selamat datang di Sistem Informasi Perpustakaan, <strong>{{ auth()->user()->name }}</strong> (Role: <em>{{ ucfirst(auth()->user()->role) }}</em>).</p>
 
+    @if (!empty($needsMigration))
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+            <strong>⚠️ Perhatian:</strong> Tabel database untuk modul anggota dan peminjaman belum dibuat di MySQL Anda.
+            <br>
+            Silakan buka terminal dan jalankan perintah: <code>php artisan migrate</code>
+        </div>
+    @endif
+
     {{-- Ringkasan Statistik --}}
     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px;">
         <div style="border: 1px solid #ddd; border-left: 5px solid #007bff; border-radius: 6px; padding: 15px; width: 170px; background: #fafafa;">
